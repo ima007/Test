@@ -64,7 +64,7 @@
 			// but we have gone ahead and gotten the API calls plugged in for you ahead of time.
 
 			//this.BingImageSearch(Element, CurrentWord, context.BingImageSearchCompleted, function () { madLibEngine.fillNextWord(); });
-			// this.YouTubeVideoSearch(Element, CurrentWord, context.YouTubeVideoSearchCompleted, function () { madLibEngine.fillNextWord(); });
+			this.YouTubeVideoSearch(Element, CurrentWord, context.YouTubeVideoSearchCompleted, function () { madLibEngine.fillNextWord(); });
 			// this.iTunesSeachAPI(Element, CurrentWord, function(Element, CurrentWord, Response){console.log(arguments); madLibEngine.fillNextWord();}, function(){ madLibEngine.fillNextWord(); });
 			// this.IMDBSearchAPI(Element, CurrentWord, function(Element, CurrentWord, Response){console.log(arguments); madLibEngine.fillNextWord();}, function(){ madLibEngine.fillNextWord(); });
 			// this.TwitterSearch(Element, CurrentWord, function(Element, CurrentWord, Response){console.log(arguments); madLibEngine.fillNextWord();}, function(){ madLibEngine.fillNextWord(); });
@@ -76,11 +76,7 @@
 			return "----";
 		}
 
-		// return true to just add the word as text.
-		// WARNING: if using a preprocess search API make sure you return false in this method.
-		// return false so it doesn't just automatically add the word and not do preprocessing.
-		// this means it will not do anything to the span so you will need to handle the replacement yourself
-		// in some success or error callback you define in the APIs
+		// return the current word
 		return CurrentWord;
 	};
 
