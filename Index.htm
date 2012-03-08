@@ -53,9 +53,9 @@
 	// if you want you can create your own local override of the handle preword call.
 	// this method has examples of all the API calls, you can add your own custom calls and handlers if you wish.
 	// this is where you will choose what types of prefill searches you'd like to do.
-	Util.HandleWordPreFill = function (Element, CurrentWord, WordCategory)
+	// this is where you will choose what types of prefill searches you'd like to do.
+	Utilities.fn.HandleWordPreFill = function (Element, CurrentWord, WordCategory)
 	{
-		// the context is actualy the Util.js class which is instantiated as a copy of new Utilities.
 		var context = this;
 
 		if (CurrentWord)
@@ -67,22 +67,32 @@
 			// this.YouTubeVideoSearch(Element, CurrentWord, context.YouTubeVideoSearchCompleted, function () { madLibEngine.fillNextWord(); });
 			// this.iTunesSeachAPI(Element, CurrentWord, function(Element, CurrentWord, Response){console.log(arguments); madLibEngine.fillNextWord();}, function(){ madLibEngine.fillNextWord(); });
 			// this.IMDBSearchAPI(Element, CurrentWord, function(Element, CurrentWord, Response){console.log(arguments); madLibEngine.fillNextWord();}, function(){ madLibEngine.fillNextWord(); });
-			// this.TwitterSearch(Element, CurrentWord, function(Element, CurrentWord, Response){console.log(arguments); madLibEngine.fillNextWord();}, function(){ madLibEngine.fillNextWord(); });
+			// this.TwitterSearch(Element, CurrentWord, context.TwitterSearchCompleted, function(){ madLibEngine.fillNextWord(); });
 			// this.NetflixSearchAPI(Element, CurrentWord, functionElement, CurrentWord, Response(){console.log(arguments); madLibEngine.fillNextWord();}, function(){ madLibEngine.fillNextWord(); });
 			// this.LastFMAPISearch(Element, CurrentWord, function (Element, CurrentWord, Response) { console.log(arguments); madLibEngine.fillNextWord(); }, function () { madLibEngine.fillNextWord(); });
 		}
 		else
 		{
-			return "----";
+			return true;
 		}
 
-		// return the current word
-		return CurrentWord;
+		// return true to just add the word as text.
+		// WARNING: if using a preprocess search API make sure you return false in this method.
+		// return false so it doesn't just automatically add the word and not do preprocessing.
+		// this means it will not do anything to the span so you will need to handle the replacement yourself.
+		return false;
+	};
+	
+	// this is where you handle what happens after the word fills.
+	// called immediately after prefill.
+	Util.HandleWordPostFill = function (Element)
+	{
+		setTimeout(function(){madLibEngine.fillNextWord()}, 1000);
 	};
 
 	$(document).ready(function ()
 	{
-		Util.Initialize();
+		Util.Initialize("BC1F1DBF0739F031833E8B65B3C8758F4CC9A02E", "005a62f70d2f51d694717cbaacf16ee6", "nx2pqcdk7kjyjt23x3mzd292");
 	});
 
 </script>

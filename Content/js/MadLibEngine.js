@@ -145,9 +145,9 @@ madLib_class.prototype.fillNextWord = function ()
 	if (!this.rElements.length) { return false; }
 
 	var $currentElement = jQuery(this.rElements.shift());
-	var wordCategory = $currentElement.attr("data-ML");
+	var wordCategory = $currentElement.attr("data-ML").toLowerCase();
 	var currentWord = "----";
-
+	
 	if (this.wordCollection[wordCategory])
 	{
 		currentPointer = this.wordCollectionPointer[wordCategory];

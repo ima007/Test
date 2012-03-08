@@ -33,9 +33,9 @@ Utilities.fn.Initialize = function (BingAPIKey, LastFMAPIKey, NetflixAPIKey)
 
 Utilities.fn.SetAPIKeys = function (BingAPIKey, LastFMAPIKey, NetflixAPIKey)
 {
-	this.BingAppID = BingAPIKey || "BC1F1DBF0739F031833E8B65B3C8758F4CC9A02E";
-	this.LastFMAPIKey = LastFMAPIKey || "005a62f70d2f51d694717cbaacf16ee6";
-	this.NetflixAPIKey = NetflixAPIKey || "nx2pqcdk7kjyjt23x3mzd292";
+	this.BingAppID = BingAPIKey || "";
+	this.LastFMAPIKey = LastFMAPIKey || "";
+	this.NetflixAPIKey = NetflixAPIKey || "";
 };
 
 Utilities.fn.GetMadLibHTML = function ()
@@ -163,10 +163,17 @@ Utilities.fn.SetupMadLibOverrides = function ()
 	// the post fil isn't going to do anything since we are using API calls.
 	madLibEngine.postFillHandler = function (element)
 	{
-		setTimeout(function () { madLibEngine.fillNextWord(); }, 1000);
+		return context.HandleWordPostFill(element);
 	};
 };
 
+// this is where you handle what happens after the word fills.
+// called immediately after prefill.
+Utilities.fn.HandleWordPostFill = function (Element)
+{
+	setTimeout(function(){madLibEngine.fillNextWord()}, 1000);
+};
+	
 // this is where you will choose what types of prefill searches you'd like to do.
 Utilities.fn.HandleWordPreFill = function (Element, CurrentWord, WordCategory)
 {
@@ -181,7 +188,7 @@ Utilities.fn.HandleWordPreFill = function (Element, CurrentWord, WordCategory)
 		// this.YouTubeVideoSearch(Element, CurrentWord, context.YouTubeVideoSearchCompleted, function () { madLibEngine.fillNextWord(); });
 		// this.iTunesSeachAPI(Element, CurrentWord, function(Element, CurrentWord, Response){console.log(arguments); madLibEngine.fillNextWord();}, function(){ madLibEngine.fillNextWord(); });
 		// this.IMDBSearchAPI(Element, CurrentWord, function(Element, CurrentWord, Response){console.log(arguments); madLibEngine.fillNextWord();}, function(){ madLibEngine.fillNextWord(); });
-		// this.TwitterSearch(Element, CurrentWord, function(Element, CurrentWord, Response){console.log(arguments); madLibEngine.fillNextWord();}, function(){ madLibEngine.fillNextWord(); });
+		// this.TwitterSearch(Element, CurrentWord, context.TwitterSearchCompleted, function(){ madLibEngine.fillNextWord(); });
 		// this.NetflixSearchAPI(Element, CurrentWord, functionElement, CurrentWord, Response(){console.log(arguments); madLibEngine.fillNextWord();}, function(){ madLibEngine.fillNextWord(); });
 		// this.LastFMAPISearch(Element, CurrentWord, function (Element, CurrentWord, Response) { console.log(arguments); madLibEngine.fillNextWord(); }, function () { madLibEngine.fillNextWord(); });
 	}
@@ -212,7 +219,7 @@ Utilities.fn.BingImageSearch = function (Element, CurrentWord, Callback, ErrorCa
 		"Sources": "Image",
 		"Version": "2.0",
 		"Market": "en-us",
-		"Adult": "Strict",
+		"Adult": "Moderate",
 		"Image.Count": 10,
 		"Image.Offset": 0,
 		"Image.Filters": "Size:Small",
@@ -312,13 +319,7 @@ Utilities.fn.TwitterSearch = function (Element, CurrentWord, Callback, ErrorCall
 		data: { "q": CurrentWord },
 		success: function (Response)
 		{
-			// regex for cleanup
-			var repl = /(((?:)@\w+))|(((?:)#\w+))|(((?:)http\w+))/gim;
-
-			for (var i in Response.results)
-			{
-				Response.results[i].text = Response.results[i].text.replace(repl, " ");
-			}
+			Response = context.TwitterFilterResponse(Response);
 
 			Callback(Element, CurrentWord, Response);
 		},
@@ -327,6 +328,26 @@ Utilities.fn.TwitterSearch = function (Element, CurrentWord, Callback, ErrorCall
 			ErrorCallback(Element, CurrentWord);
 		}
 	});
+};
+
+Utilities.fn.TwitterFilterResponse = function (Response)
+{
+	try
+	{
+		// regex for cleanup
+		var repl = /(((?:)@\w+))|(((?:)#\w+))|(((?:)http\w+))/gim;
+
+		for (var i in Response.results)
+		{
+			Response.results[i].text = Response.results[i].text.replace(repl, " ");
+		}
+	}
+	catch(error)
+	{
+	
+	}
+	
+	return Response;
 };
 
 Utilities.fn.LastFMAPISearch = function (Element, CurrentWord, Callback, ErrorCallback)
@@ -397,7 +418,7 @@ Utilities.fn.BingImageSearchCompleted = function (Element, CurrentWord, Response
 
 	var Image = Response.SearchResponse.Image.Results.randomItem();
 
-	$(Element).html("<img title='" + Image.Title + "' src='" + Image.MediaUrl + "' />");
+	$(Element).html("<img title='" + Image.Title + "' src='" + Image.MediaUrl + "' />");	
 };
 
 Utilities.fn.YouTubeVideoSearchCompleted = function (Element, CurrentWord, Response)
@@ -416,8 +437,22 @@ Utilities.fn.YouTubeVideoSearchCompleted = function (Element, CurrentWord, Respo
 	<embed src="http://www.youtube.com/v/' + cleanID + '&hl=en&fs=1" type="application/x-shockwave-flash"\
 	allowfullscreen="true" width="100" height="100"></embed>\
 	</object>');
+};
 
-	setTimeout(function () { madLibEngine.fillNextWord(); }, 1000);	
+Utilities.fn.TwitterSearchCompleted = function(Element, CurrentWord, Response)
+{
+	$(Element).html(CurrentWord);
+	
+	try
+	{
+		var tweet = Response.results.randomItem();
+
+		$(Element).html(tweet.text);
+	}
+	catch(e)
+	{
+	
+	}
 };
 
 var Util = new Utilities();
