@@ -25,8 +25,8 @@ Utilities.fn.Initialize = function (BingAPIKey, LastFMAPIKey, NetflixAPIKey)
 	this.IMDBAPIURL = "http://www.imdbapi.com/";
 	this.TwitterSearchAPIURL = "http://search.twitter.com/search.json";
 	this.NetflixSearchAPIURL = "http://api.netflix.com/catalog/titles/autocomplete";
-	this.MadLibAPIURL = "http://dev.markitqa.com/Meetup/MadLib/GetMadLib";
-	this.MadLibDictionaryAPIURL = "http://dev.markitqa.com/Meetup/MadLib/GetMadLibWords";
+	this.MadLibAPIURL = "http://dev.markitondemand.com/Meetup/MadLib/GetMadLib";
+	this.MadLibDictionaryAPIURL = "http://dev.markitondemand.com/Meetup/MadLib/GetMadLibWords";
 
 	this.SetupMadLib(true);
 };
